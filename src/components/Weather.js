@@ -2,6 +2,7 @@ import React from "react";
 
 const Weather = (props) => {
   const temperature = Math.round(props.temp);
+  console.log('weather', props.error)
 
   return (
     <div>

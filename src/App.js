@@ -11,7 +11,6 @@ fetch('https://extreme-ip-lookup.com/json/?key=ShlUFaRmsfAKK67LzO49')
   .then( res => res.json())
   .then(response => {
     baseCity = response.city;
-    // console.log(response)
   })
 
 class App extends React.Component {
@@ -36,34 +35,48 @@ class App extends React.Component {
       const data = await api_url.json();
       const formButton = document.getElementById('form__button');
 
-      console.log(data)
-
       //Dark theme for night time
-      if (data.dt < data.sys.sunrise || data.dt > data.sys.sunset) {
-        document.body.classList.add('body--dark');
-        formButton.classList.add('form__button--dark');
+
+      if (data.cod !== '404') {
+        if (data.dt < data.sys.sunrise || data.dt > data.sys.sunset) {
+          document.body.classList.add('body--dark');
+          formButton.classList.add('form__button--dark');
+        } else {
+          document.body.classList.remove('body--dark');
+          formButton.classList.remove('form__button--dark');
+        }
+    
+        this.setState({
+          temp: data.main.temp,
+          city: data.name,
+          country: data.sys.country,
+          pressure: data.main.pressure,
+          error: undefined,
+          time: undefined,
+          sunrise: undefined,
+          sunset: undefined,
+        });
       } else {
-        document.body.classList.remove('body--dark');
-        formButton.classList.remove('form__button--dark');
+        this.setState({
+          temp: undefined,
+          city: undefined,
+          country: undefined,
+          pressure: undefined,
+          error: 'Город не найден',
+          time: undefined,
+          sunrise: undefined,
+          sunset: undefined,
+        });
       }
 
-      this.setState({
-        temp: data.main.temp,
-        city: data.name,
-        country: data.sys.country,
-        pressure: data.main.pressure,
-        error: undefined,
-        time: undefined,
-        sunrise: undefined,
-        sunset: undefined,
-      });
+      // Эта часть нужна на тот случай, если город не введен и он не может автоматом определиться.
     } else {
       this.setState({
         temp: undefined,
         city: undefined,
         country: undefined,
         pressure: undefined,
-        error: 'Введите название города',
+        error: 'Город не найден',
         time: undefined,
         sunrise: undefined,
         sunset: undefined,
